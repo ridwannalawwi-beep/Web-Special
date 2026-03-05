@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>365 Days With You</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+.page-transition{
+position:fixed;
+inset:0;
+background:#000;
+opacity:0;
+pointer-events:none;
+transition:opacity .8s ease;
+z-index:999;
+}
+
+.page-transition.show{
+opacity:1;
+pointer-events:all;
+}
+
+:root{--gold:#d4af37;}
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+font-family:'Montserrat',sans-serif;
+background:#000;color:#fff;overflow-x:hidden;
+}
+
+body::after{
+content:"";position:fixed;inset:0;
+background:radial-gradient(circle at center,transparent 55%,rgba(0,0,0,0.5) 75%,rgba(0,0,0,0.85) 100%);
+pointer-events:none;z-index:2;
+}
+
+body::before{
+content:"";position:fixed;inset:0;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+mix-blend-mode:overlay;pointer-events:none;z-index:1;
+}
+
+.light-beam{
+position:fixed;top:0;right:-20%;width:60%;height:100%;
+background:linear-gradient(120deg,rgba(212,175,55,0.15),transparent 60%);
+filter:blur(120px);animation:beamMove 8s ease-in-out infinite alternate;
+z-index:0;pointer-events:none;
+}
+@keyframes beamMove{from{transform:translateX(0);}to{transform:translateX(-80px);}}
+
+canvas{position:fixed;top:0;left:0;z-index:0;pointer-events:none;}
+
+.envelope-screen{
+position:fixed;inset:0;background:#000;
+display:flex;align-items:center;justify-content:center;flex-direction:column;
+z-index:20;transition:opacity 1s ease;
+}
+.envelope{
+position:relative;
+width:300px;
+height:190px;
+background:linear-gradient(145deg,#111,#000);
+border:1px solid rgba(212,175,55,0.3);
+cursor:pointer;
+transition:transform .6s ease, box-shadow .6s ease;
+perspective:1000px;
+}
+
+.envelope:hover{
+transform:translateY(-8px) scale(1.03);
+box-shadow:0 20px 50px rgba(212,175,55,0.25);
+}
+
+.flap{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(145deg,#1a1a1a,#000);
+clip-path:polygon(0 0,100% 0,50% 55%);
+transform-origin:top;
+transition:transform 1s cubic-bezier(.77,0,.18,1);
+z-index:3;
+}
+
+.envelope.open .flap{
+transform:rotateX(180deg);
+}
+
+.letter{
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#111,#000);
+z-index:1;
+}
+
+.seal{
+position:absolute;
+width:60px;
+height:60px;
+background:radial-gradient(circle at 30% 30%,#f6d878,var(--gold));
+border-radius:50%;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+z-index:4;
+box-shadow:0 0 20px rgba(212,175,55,0.6);
+transition:opacity .6s ease, transform .6s ease;
+}
+
+.envelope.open .seal{
+opacity:0;
+transform:translate(-50%,-50%) scale(0.7);
+}
+.open-text{
+    margin-top:18px;
+    text-align:center;
+
+    font-family:'Cinzel', serif;
+    font-size:clamp(10px,2vw,14px);
+    letter-spacing:3px;
+    line-height:1.6;
+
+    color:var(--gold);
+    opacity:0.85;
+}
+
+@keyframes pulse{0%,100%{opacity:0.4;}50%{opacity:1;}}
+
+.wrapper{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+position:relative;
+z-index:3;
+
+opacity:0;
+transition:opacity 1.5s ease;
+}
+
+.wrapper.show{
+opacity:1;
+}
+
+.card{
+width:min(95vw,1100px);
+aspect-ratio:16/9;
+display:grid;
+gap: 0px;
+
+grid-template-columns:1fr 2px 1fr;
+grid-template-areas:
+"right divider left";
+}
+.left{
+grid-area:left;
+}
+
+.right{
+grid-area:right;
+}
+
+.divider{
+grid-area:divider;
+}
+
+@media (max-height:700px){
+.card{
+aspect-ratio:auto;
+}
+}
+
+.divider{
+background:linear-gradient(to bottom,transparent,var(--gold),transparent);
+width:2px;
+}
+
+.left{
+padding:clamp(30px,5vw,80px);
+background:linear-gradient(135deg,#111,#000);
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
+
+.left p{
+color:#ccc;
+line-height:1.8;
+font-size:clamp(13px,1.5vw,16px);
+max-width:420px;
+text-align: left;
+letter-spacing:0.3px;
+}
+
+.right{
+padding:clamp(30px,5vw,80px);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+background:radial-gradient(circle at top right,rgba(212,175,55,0.12),#000 60%);
+}
+
+.title{
+font-family:'Cinzel',serif;
+font-size:clamp(20px,4vw,48px);
+letter-spacing:clamp(2px,1vw,6px);
+background:linear-gradient(135deg,#fff,var(--gold));
+
+background-clip:text;
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+color:transparent;
+
+margin-bottom:clamp(20px,3vw,50px);
+}
+
+.countdown{
+display:flex;
+gap:clamp(8px,2vw,20px);
+margin-bottom:clamp(20px,3vw,40px);
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.count-item{text-align:center;min-width:50px;}
+
+.count-number{
+font-family:'Cinzel',serif;
+font-size:clamp(16px,3vw,36px);
+color:var(--gold);
+}
+
+.count-label{
+font-size:clamp(8px,1.5vw,11px);
+letter-spacing:2px;
+color:#aaa;
+margin-top:5px;
+}
+
+.event-info{
+color:#ccc;
+line-height:1.6;
+font-size:clamp(11px,1.5vw,14px);
+}
+.event-info{
+color:#ccc;
+line-height:1.8;
+font-size:clamp(10px,1.2vw,13px);
+letter-spacing:0.5px;
+
+display:flex;
+flex-direction:column;
+gap:16px;
+margin-top:10px;
+width:100%;
+max-width:320px;
+}
+
+.info-item{
+display:flex;
+align-items:center;
+gap:12px;
+justify-content:center;
+text-align:left;
+width:100%;
+}
+
+.icon{
+width:12px;
+height:12px;
+fill:var(--gold);
+opacity:0.65;
+flex-shrink:0;
+}
+
+.info-item span{
+flex:1;
+}
+
+.music-btn{
+position:fixed;bottom:30px;right:30px;
+opacity: 0;
+pointer-events: none;
+padding:10px 18px;background:rgba(0,0,0,0.7);
+border:1px solid var(--gold);color:var(--gold);
+cursor:pointer;z-index:5;
+}
+
+@media (max-width: 768px){
+
+.card{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "right"
+        "divider"
+        "left";
+    aspect-ratio: auto;
+}
+
+.divider{
+    width: 80%;
+    height: 1px;
+    margin: 25px auto;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.6;
+}
+
+.left,
+.right{
+    padding: clamp(28px,7vw,50px);
+}
+
+.left{
+    text-align: left;
+    align-items: flex-start;
+}
+
+.countdown{
+    justify-content: center;
+}
+
+}
+
+.confirm-btn{
+
+margin-top:30px;
+padding:12px 32px;
+
+border:1px solid var(--gold);
+color:var(--gold);
+
+text-decoration:none;
+font-family:'Cinzel',serif;
+
+letter-spacing:1.6px;
+font-size:12px;
+
+display:inline-block;
+
+background:transparent;
+
+position:relative;
+overflow:hidden;
+
+transition:all .45s ease;
+
+}
+
+/* SHINE EFFECT */
+
+.confirm-btn::before{
+
+content:"";
+
+position:absolute;
+top:0;
+left:-120%;
+
+width:120%;
+height:100%;
+
+background:linear-gradient(
+120deg,
+transparent,
+rgba(255,255,255,0.55),
+transparent
+);
+
+transition:0.8s;
+
+}
+
+/* SHINE SWEEP */
+
+.confirm-btn:hover::before{
+left:120%;
+}
+
+/* HOVER GLOW */
+
+.confirm-btn:hover{
+
+background:var(--gold);
+color:#000;
+
+box-shadow:
+0 0 25px rgba(212,175,55,0.6),
+0 0 60px rgba(212,175,55,0.35);
+
+transform:translateY(-2px);
+
+}
+.cinema-overlay{
+position:fixed;
+inset:0;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+opacity:0;
+pointer-events:none;
+transition:opacity 1.2s ease;
+z-index:999;
+}
+
+.cinema-overlay.show{
+opacity:1;
+pointer-events:all;
+}
+
+.cinema-text{
+text-align:center;
+opacity:0;
+transform:translateY(20px);
+transition:all 1.5s ease;
+letter-spacing:10px;
+animation:cinemaFade 3s ease forwards;
+@keyframes cinemaFade{
+0%{opacity:0; transform:translateY(30px);}
+30%{opacity:1;}
+80%{opacity:1;}
+100%{opacity:0; transform:translateY(-20px);}
+}
+}
+
+.cinema-overlay.show .cinema-text{
+opacity:1;
+transform:translateY(0);
+}
+
+.cinema-line{
+font-family:'Cinzel',serif;
+letter-spacing:6px;
+font-size:14px;
+color:#aaa;
+margin-bottom:20px;
+}
+
+.cinema-name{
+font-family:'Cinzel',serif;
+font-size:28px;
+letter-spacing:8px;
+background:linear-gradient(135deg,#fff,var(--gold));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="light-beam"></div>
+<canvas id="particles"></canvas>
+
+<div class="envelope-screen" id="envelopeScreen">
+<div class="envelope" id="envelope">
+    <div class="flap"></div>
+    <div class="letter"></div>
+    <div class="seal"></div>
+</div>
+<div class="open-text">DEAR RAHMA SEPTIANI<br>I'M INVITING YOUU!</div>
+</div>
+
+<div class="wrapper" id="mainContent">
+<div class="card">
+
+<div class="left">
+<p>Haiii Babee.....</p><br><br>
+<p>29 Agustus bukanlah sekadar tanggal di kalender.
+<br>
+Ini adalah 365 hari tentang tawa, pelukan,
+dan setiap detik kecil yang membuatku yakin…
+<br>
+Bahwa bersamamu adalah rumah.</p><br><br>
+<p>Aku mengundangmu untuk merayakan satu tahun perjalanan yang luar biasa ini.</p>
+</div>
+
+<div class="divider"></div>
+
+<div class="right">
+<div class="title">365 DAYS WITH YOU</div>
+
+<div class="countdown">
+<div class="count-item"><div id="days" class="count-number">00</div><div class="count-label">DAYS</div></div>
+<div class="count-item"><div id="hours" class="count-number">00</div><div class="count-label">HOURS</div></div>
+<div class="count-item"><div id="minutes" class="count-number">00</div><div class="count-label">MINUTES</div></div>
+<div class="count-item"><div id="seconds" class="count-number">00</div><div class="count-label">SECONDS</div></div>
+</div>
+
+<div class="event-info">
+
+<div class="info-item">
+<svg viewBox="0 0 24 24" class="icon">
+<path d="M7 2v2H5a2 2 0 0 0-2 2v2h18V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm14 8H3v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10z"/>
+</svg>
+<span>29 Agustus 2026 • 16:00 WIB</span>
+</div>
+<div class="info-item">
+<svg viewBox="0 0 24 24" class="icon">
+<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/>
+</svg>
+<span>Kota Bandung</span>
+</div>
+
+<div class="info-item">
+<svg viewBox="0 0 24 24" class="icon">
+<path d="M12 2l4 4-2 2 4 4-2 2-4-4-4 4-2-2 4-4-2-2 4-4z"/>
+</svg>
+<span>Dresswell</span>
+</div>
+<a href="#" class="confirm-btn" id="confirmBtn">
+CONFIRM ATTENDANCE
+</a>
+</div>
+</div>
+
+</div>
+</div>
+
+<button class="music-btn" id="musicBtn">MUSIC OFF</button>
+
+<audio id="bgMusic" loop preload="metadata" playsinline>
+<source src="membasuh.mp3" type="audio/mpeg">
+</audio>
+
+<div class="page-transition" id="pageTransition"></div>
+<div class="cinema-overlay" id="cinemaOverlay">
+  <div class="cinema-text">
+    <p class="cinema-line">Until our moment begins</p>
+  </div>
+</div>
+
+<script>
+const envelope=document.getElementById("envelope");
+const screen=document.getElementById("envelopeScreen");
+const wrapper=document.getElementById("mainContent");
+const music=document.getElementById("bgMusic");
+const musicBtn=document.getElementById("musicBtn");
+envelope.addEventListener("click",()=>{
+envelope.classList.add("open");
+document.addEventListener("click", enableMusic, { once:true });
+music.load();
+
+let isMusicOn = false;
+
+async function enableMusic(){
+    try {
+        music.muted = false;
+        await music.play();
+        isMusicOn = true;
+        musicBtn.textContent = "MUSIC ON";
+    } catch (err) {
+        console.log("Autoplay blocked, waiting user gesture");
+        musicBtn.textContent = "TAP TO PLAY";
+    }
+}
+
+function toggleMusic(){
+    if(music.paused){
+        enableMusic();
+    }else{
+        music.pause();
+        isMusicOn = false;
+        musicBtn.textContent = "MUSIC OFF";
+    }
+}
+envelope.addEventListener("click",()=>{
+    envelope.classList.add("open");
+
+    enableMusic();
+
+    setTimeout(()=>{
+        screen.style.opacity="0";
+        setTimeout(()=>{
+            screen.style.display="none";
+            wrapper.classList.add("show");
+        },1000);
+    },700);
+});
+
+musicBtn.addEventListener("click",()=>{
+    if(music.paused){
+        enableMusic();
+    }else{
+        music.pause();
+        isMusicOn = false;
+        musicBtn.textContent = "MUSIC OFF";
+    }
+});
+
+musicBtn.addEventListener("click", toggleMusic);
+
+setTimeout(()=>{
+screen.style.opacity="0";
+setTimeout(()=>{
+screen.style.display="none";
+wrapper.classList.add("show");
+},1000);
+},700);
+});
+
+const target=new Date("2026-08-29T16:00:00").getTime();
+function updateCountdown(){
+let d=target-new Date().getTime();
+if(d<0)d=0;
+days.textContent=Math.floor(d/(1000*60*60*24));
+hours.textContent=Math.floor((d%(1000*60*60*24))/(1000*60*60));
+minutes.textContent=Math.floor((d%(1000*60*60))/(1000*60));
+seconds.textContent=Math.floor((d%(1000*60))/1000);
+}
+setInterval(updateCountdown,1000);
+updateCountdown();
+
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+resize();
+window.addEventListener("resize",resize);
+
+let particles=[];
+for(let i=0;i<100;i++){
+particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2,speed:Math.random()*0.5+0.2});
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="rgba(212,175,55,0.5)";
+particles.forEach(p=>{
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+ctx.fill();
+p.y+=p.speed;
+if(p.y>canvas.height){p.y=0;p.x=Math.random()*canvas.width;}
+});
+requestAnimationFrame(animate);
+}
+animate();
+const confirmBtn = document.getElementById("confirmBtn");
+const cinemaOverlay = document.getElementById("cinemaOverlay");
+
+confirmBtn.addEventListener("click", function(e){
+    e.preventDefault();
+
+    cinemaOverlay.classList.add("show");
+
+    // optional: fade out music pelan
+    if(!music.paused){
+        let fadeAudio = setInterval(()=>{
+            if(music.volume > 0.05){
+                music.volume -= 0.05;
+            } else {
+                music.pause();
+                clearInterval(fadeAudio);
+            }
+        },100);
+    }
+
+    setTimeout(()=>{
+        window.location.href = "confirm.html";
+    },3500);
+});
+</script>
+
+</body>
+</html>
