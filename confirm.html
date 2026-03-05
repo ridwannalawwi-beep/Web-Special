@@ -644,7 +644,7 @@ const overlay = document.getElementById("romanticOverlay");
 const title = overlay.querySelector("h2");
 const textEl = overlay.querySelector("p");
 
-const scriptURL = "PASTE_URL_GOOGLE_SCRIPT_KAMU_DISINI";
+const scriptURL = "https://script.google.com/macros/s/AKfycbykF4iQn_8QoNKNNK-Oe10sQHbmjMeMTXdBUKpNzQ_nt958R9yHFNK0z7l8U3wk9YI0dw/exec";
 const phoneNumber = "6282115295634";
 
 function typeWriter(element, text, speed){
@@ -686,7 +686,10 @@ return;
 
 }
 
-const data = { attendance: attendance};
+const data = {
+  message: message,
+  attendance: attendance
+};
 
 try{
 
