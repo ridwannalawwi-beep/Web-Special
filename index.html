@@ -924,13 +924,13 @@
             dan setiap detik kecil yang membuatku yakin<br>
             bahwa bersamamu adalah rumah.....
           </p>
-          <p class="letter-close reveal" style="transition-delay:0.4s">
-            Aku mengundangmu untuk merayakan<br>
-            satu tahun perjalanan yang luar biasa ini.
-          </p>
         </div>
         <div class="closing-panel closing-right">
           <p class="confirm-eyebrow reveal">Kamu Diundang</p>
+          <p class="letter-close reveal" style="transition-delay:0.1s; margin-top:0; margin-bottom:16px;">
+            Aku mengundangmu untuk merayakan<br>
+            satu tahun perjalanan yang luar biasa ini.
+          </p>
           <div class="ornament reveal" style="margin-bottom:20px; max-width:140px; transition-delay:0.15s">
             <div class="ornament-line"></div>
             <div class="ornament-dot"></div>
@@ -1090,6 +1090,7 @@
     (function() {
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
       window.scrollTo(0, 0);
+      document.body.style.overflow = 'hidden';
       window.addEventListener('load', function() { window.scrollTo(0, 0); });
     })();
 
@@ -1104,11 +1105,13 @@
         if (done) return;
         done = true;
         env.classList.add('open');
+        window.scrollTo(0, 0);
         AE.start();
         setTimeout(function() {
           screen.style.opacity = '0';
           setTimeout(function() {
             screen.style.display = 'none';
+            document.body.style.overflow = '';
             main.classList.add('show');
             btn.classList.add('on');
             btn.textContent = '♫ MUSIK NYALA';
