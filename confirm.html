@@ -405,10 +405,17 @@
       var music = document.getElementById("bgMusic");
       music.volume = 0;
       music.play().then(function() {
+        var from = 0,
+          to = 0.6,
+          steps = Math.max(1, Math.round(5000 / 25)),
+          n = 0;
         var t = setInterval(function() {
-          if (music.volume < 0.6) { music.volume = Math.min(0.6, music.volume + 0.03); }
-          else { clearInterval(t); }
-        }, 100);
+          n++;
+          var p = n / steps,
+            e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+          music.volume = Math.min(1, Math.max(0, from + (to - from) * e));
+          if (n >= steps) { clearInterval(t); }
+        }, 25);
       }).catch(function() {});
     });
 
