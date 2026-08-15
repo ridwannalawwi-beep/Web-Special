@@ -175,7 +175,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--gold-line);
-      border-left: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);                                                                                                                                                                                                                                                                                                                                                         
       border-radius: var(--radius-sm);
       padding: 14px 20px;
       color: var(--gold-soft);
@@ -334,6 +334,10 @@
         <label><em>2.</em>Ceritakan apa yang kamu rasakan di dalam hubungan ini selama 365 hari bersamaku</label>
         <textarea id="story"></textarea>
       </div>
+      <div class="field">
+        <label><em>3.</em>Berikan semua kesan pesan dan unek unek kamu saat ketika kita menginjak 365 hari bersama</label>
+        <textarea id="kesan"></textarea>
+      </div>
       <select required>
         <option value="">Apakah kamu akan hadir?</option>
         <option>Ya, aku akan hadir 🤍</option>
@@ -447,14 +451,16 @@
       e.preventDefault();
       var message = document.getElementById("poem").value;
       var story = document.getElementById("story").value;
+      var kesan = document.getElementById("kesan").value;
       var attendance = form.querySelector("select").value;
       var notices = [];
       if (!attendance) notices.push("Pilih dulu kehadiranmu ya.....");
       if (!message.trim()) notices.push("Puisi untukku belum ada, isi dulu ya.....");
       if (!story.trim()) notices.push("Ceritakan perasaanmu dulu ya.....");
+      if (!kesan.trim()) notices.push("Kesan pesanmu belum ada, isi dulu ya.....");
       if (notices.length) { notices.forEach(showToast); return; }
       try {
-        await fetch(scriptURL, { method: "POST", body: JSON.stringify({ poem: message, story: story, attendance: attendance }) });
+        await fetch(scriptURL, { method: "POST", body: JSON.stringify({ poem: message, story: story, kesan: kesan, attendance: attendance }) });
       } catch (err) {}
       overlay.classList.add("show");
       var waAttendance = attendance === "Maaf, aku tidak bisa hadir" ? "Ya, aku akan hadir 🤍" : attendance;
@@ -469,7 +475,7 @@
         var music = document.getElementById("bgMusic");
         if (music) { music.pause();
           music.currentTime = 0; }
-        window.location.href = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent("Haii babeee\n" + waAttendance);
+        window.location.href = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent("Haii sayangg\n" + waAttendance);
       }, 5000);
     });
   </script>

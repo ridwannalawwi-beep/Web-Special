@@ -4,7 +4,7 @@ Undangan web anniversary 1 tahun, static HTML/CSS/JS (tanpa build tool). Dibuat 
 
 ## Fakta kunci (jangan diubah tanpa diminta)
 
-- Tanggal: **29 Agustus 2026, 16:00 WIB** (countdown di index.html pakai `2026-08-29T16:00:00`)
+- Tanggal: **29 Agustus 2026** (countdown JS di index.html pakai `2026-08-29T00:00:00`; teks tampilan di bawah countdown tetap "16:00 WIB")
 - Lokasi: **Kota Bandung**, dresscode: **Dresswell**
 - Halaman: `index.html` (amplop → hero + video + surat + konfirmasi) → `confirm.html` (form RSVP)
 - Musik: `membasuh.mp3` (index), `who.mp3` (confirm)
